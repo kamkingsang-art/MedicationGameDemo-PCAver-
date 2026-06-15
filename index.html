@@ -1,0 +1,1587 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>《伊院の藥物安全物語 ── 關於我成為藥安大師這檔事》</title>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #005b9f 0%, #00d2ff 100%);
+            --accent-gradient: linear-gradient(135deg, #4db6ac 0%, #00f2fe 100%);
+            --danger-gradient: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --panel-bg: rgba(255, 255, 255, 0.88);
+            --text-main: #1a2a3a;
+            --text-muted: #546e7a;
+            --game-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            /* Prevent English words from breaking in the middle */
+            word-break: normal;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+
+        /* Animated Flowing Background */
+        body {
+            background: linear-gradient(-45deg, #a18cd1, #fbc2eb, #8fd3f4, #84fab0);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- JRPG Background Effects (Clouds & Shooting Stars) --- */
+        .jrpg-bg-effects {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden;
+            z-index: 0; /* Behind the game container */
+            pointer-events: none;
+        }
+
+        /* Floating Clouds */
+        .jrpg-cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 100px;
+            filter: blur(12px);
+            animation: driftCloud linear infinite;
+        }
+        .jrpg-cloud::before, .jrpg-cloud::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+        }
+        .jrpg-cloud::before {
+            width: 60%; height: 150%; top: -40%; left: 15%;
+        }
+        .jrpg-cloud::after {
+            width: 50%; height: 120%; top: -20%; right: 15%;
+        }
+        
+        .cloud-1 { width: 250px; height: 60px; top: 15%; left: -300px; animation-duration: 35s; animation-delay: 0s; }
+        .cloud-2 { width: 180px; height: 45px; top: 55%; left: -250px; animation-duration: 25s; animation-delay: -15s; }
+        .cloud-3 { width: 300px; height: 80px; top: 80%; left: -350px; animation-duration: 45s; animation-delay: -5s; opacity: 0.6; }
+        .cloud-4 { width: 150px; height: 40px; top: 30%; left: -200px; animation-duration: 28s; animation-delay: -20s; }
+
+        @keyframes driftCloud {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(100vw + 400px)); }
+        }
+
+        /* Shooting Stars */
+        .jrpg-star {
+            position: absolute;
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.8));
+            animation: shootStar linear infinite;
+            opacity: 0;
+            transform: rotate(-45deg);
+        }
+        .jrpg-star::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.9);
+        }
+        
+        .star-1 { top: 10%; right: -20%; animation-duration: 5s; animation-delay: 2s; }
+        .star-2 { top: -10%; right: 30%; animation-duration: 7s; animation-delay: 5s; }
+        .star-3 { top: 40%; right: -10%; animation-duration: 6s; animation-delay: 8s; }
+
+        @keyframes shootStar {
+            0% { transform: translate(0, 0) rotate(-45deg); opacity: 1; }
+            20% { transform: translate(-30vw, 30vw) rotate(-45deg); opacity: 0; }
+            100% { transform: translate(-30vw, 30vw) rotate(-45deg); opacity: 0; }
+        }
+        /* -------------------------------------------------------- */
+
+        /* Glassmorphism Container */
+        #game-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100dvh;
+            max-height: 100dvh;
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2), inset 0 0 0 2px rgba(255,255,255,0.5);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            border-radius: 20px;
+            z-index: 10; /* Above the JRPG background effects */
+        }
+
+        /* JRPG Inner White Panel Decorations */
+        .jrpg-panel-bg {
+            position: absolute;
+            top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 2px solid rgba(0, 210, 255, 0.15);
+            border-radius: 16px;
+            pointer-events: none;
+            z-index: 0;
+            background-image: radial-gradient(circle at center, rgba(112,0,255,0.02) 0%, transparent 60%);
+        }
+        .jrpg-panel-bg::before, .jrpg-panel-bg::after {
+            content: '✧';
+            position: absolute;
+            color: rgba(0, 210, 255, 0.4);
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        .jrpg-panel-bg::before { top: -11px; left: -8px; }
+        .jrpg-panel-bg::after { bottom: -11px; right: -8px; }
+
+        .jrpg-panel-bg-inner {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+        }
+        .jrpg-panel-bg-inner::before, .jrpg-panel-bg-inner::after {
+            content: '✧';
+            position: absolute;
+            color: rgba(0, 210, 255, 0.4);
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        .jrpg-panel-bg-inner::before { top: -11px; right: -8px; }
+        .jrpg-panel-bg-inner::after { bottom: -11px; left: -8px; }
+
+        .watermark-emblem {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14rem;
+            color: rgba(112, 0, 255, 0.035);
+            animation: slowSpin 40s linear infinite;
+        }
+
+        @keyframes slowSpin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        #game-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        #game-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #00d2ff, #005b9f);
+            border-radius: 3px;
+        }
+
+        .screen {
+            display: none;
+            padding: 15px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+            text-align: center;
+            box-sizing: border-box;
+            z-index: 1; /* Keep above inner JRPG watermark */
+            position: relative;
+        }
+
+        /* Screen Fade & Slide Up Animation */
+        .screen.active {
+            display: flex;
+            animation: slideUpFade 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Header UI & RPG HP Bar - Placed neatly within borders */
+        .status-bar {
+            width: calc(100% - 30px);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 10px 15px;
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 15px;
+            z-index: 10;
+            border-radius: 12px;
+            margin: 15px 15px 0px 15px;
+        }
+
+        .status-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Fancy Heart HP Display Container inside Border */
+        .hearts-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            background: rgba(0,0,0,0.2);
+            padding: 5px;
+            border-radius: 10px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.25);
+            gap: 3px;
+            height: 32px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .heart {
+            font-size: 1.35rem;
+            filter: drop-shadow(0 0 6px rgba(255, 65, 108, 0.75));
+            animation: heartbeat 2s infinite ease-in-out;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .heart.empty {
+            filter: grayscale(1) opacity(0.25);
+            animation: none;
+            transform: scale(0.85);
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.18); }
+        }
+
+        /* Area Badge / Status Badge */
+        .area-badge {
+            background: linear-gradient(90deg, #e0f2fe, #f0f9ff);
+            color: #0070c0;
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-weight: 900;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            border: 2px solid #bae6fd;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(0, 112, 192, 0.15);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .area-badge.danger {
+            background: linear-gradient(90deg, #ffebee, #ffcdd2);
+            color: #d32f2f;
+            border-color: #ef9a9a;
+            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.2);
+        }
+
+        /* Colorful Title Design */
+        .title-wrapper {
+            margin: 10px 0 20px 0;
+            position: relative;
+            width: 100%;
+        }
+
+        .main-title {
+            font-size: 2.1rem;
+            font-weight: 900;
+            background: linear-gradient(to right, #ff007a, #7000ff, #00d2ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShine 4s linear infinite;
+            letter-spacing: -0.5px;
+            margin-bottom: 5px;
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.1));
+        }
+
+        @keyframes textShine {
+            to { background-position: 200% center; }
+        }
+
+        .sub-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #ff6b6b;
+            letter-spacing: 0.5px;
+            text-align: center;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .decor-line {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: rgba(112, 0, 255, 0.4);
+            letter-spacing: 4px;
+            margin: 8px 0;
+            text-transform: uppercase;
+        }
+
+        /* Custom Keyword Highlighting */
+        .highlight-text strong {
+            color: #ff007a;
+            font-weight: 900;
+            text-shadow: 0 0 12px rgba(255, 0, 122, 0.25);
+            padding: 0 2px;
+            letter-spacing: 0.5px;
+        }
+
+        #screen-feedback .highlight-text strong {
+            color: #11998e;
+            text-shadow: 0 0 12px rgba(17, 153, 142, 0.25);
+        }
+
+        /* Delayed Buttons for Animation Synchronization */
+        .delayed-btn {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(15px);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .delayed-btn.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        /* Animated Buttons Structure */
+        .btn {
+            -webkit-appearance: none;
+            appearance: none;
+            position: relative;
+            overflow: hidden;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 1.15rem;
+            font-weight: 900;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 90%;
+            max-width: 350px;
+            margin: 10px auto;
+            letter-spacing: 1px;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 8px;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-20deg);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+
+        .btn:hover::after { left: 150%; }
+        .btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); }
+        .btn:active { transform: scale(0.95); }
+        
+        .btn-primary { background: var(--primary-gradient); }
+        .btn-danger { background: var(--danger-gradient); }
+        .btn-success { background: var(--success-gradient); animation: pulseGlow 2s infinite; }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(56, 239, 125, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0); }
+        }
+
+        /* New Map Wrapper & JRPG Nodes */
+        .map-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 10px;
+            border: 3px solid #fff;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            background: #1a2a3a;
+        }
+
+        .map-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .svg-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* High-Legibility JRPG Classic Dark Frame Node Plates with Perfect Name Fit */
+        .map-node {
+            -webkit-appearance: none;
+            appearance: none;
+            position: absolute;
+            left: var(--target-x);
+            top: var(--target-y);
+            width: auto !important;
+            /* Customized dimensions for seamless un-cropped region titles */
+            min-width: 140px;
+            padding: 10px 16px !important;
+            flex-direction: row !important;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            /* High contrast traditional dark tactical blueprint frame */
+            background: rgba(8, 14, 36, 0.92) !important;
+            border: 2px solid #00d2ff !important;
+            /* Crisp clean double white inlay borders for high clarity */
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85), 0 8px 20px rgba(0,0,0,0.5) !important;
+            color: #ffffff !important; 
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 2;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(0);
+            animation: popOutMap 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            transition: all 0.25s ease-out;
+        }
+
+        @keyframes popOutMap {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; left: 50%; top: 50%; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; left: var(--target-x); top: var(--target-y); }
+        }
+
+        /* Ultra Legible Luminous Pixel Font Styles */
+        .map-node span {
+            font-family: 'DotGothic16', sans-serif !important;
+            font-size: 1.15rem !important; 
+            letter-spacing: 1.5px;
+            font-weight: bold;
+            color: #ffffff !important;
+            white-space: id-unique-nowrap;
+            white-space: nowrap !important; /* Forces regional string isolation without mid-word splits */
+            text-shadow: 0 0 8px rgba(0, 210, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.9) !important;
+        }
+
+        .map-node:not(.completed):hover {
+            border-color: #ffffff !important;
+            background: rgba(16, 32, 72, 0.96) !important;
+            box-shadow: 0 0 0 2px #00d2ff, 0 0 15px #00d2ff !important;
+            transform: translate(-50%, -50%) scale(1.08) !important;
+            z-index: 10;
+        }
+
+        .map-node.completed {
+            background: rgba(30, 41, 59, 0.9) !important;
+            border-color: #64748b !important;
+            box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.4) !important;
+            filter: grayscale(0.2);
+        }
+
+        .map-node.completed span {
+            color: #94a3b8 !important;
+            text-shadow: none !important;
+        }
+
+        /* RPG Inventory slots grid */
+        .inventory-container {
+            margin-top: 15px;
+            width: 100%;
+            background: rgba(248, 250, 252, 0.8);
+            border: 2px dashed #94a3b8;
+            border-radius: 16px;
+            padding: 12px 10px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .inventory-container h3 {
+            font-size: 1.1rem;
+            color: #334155;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            font-weight: 900;
+        }
+
+        .inventory-slots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .slot {
+            width: 75px;
+            height: 75px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            background: #ffffff;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .slot.filled {
+            border-color: #fbbf24;
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.6), inset 0 0 8px rgba(255,255,255,0.8);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(1.05);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.6); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* JRPG Equipment Image Border & Sizing */
+        .jrpg-equip-img {
+            width: 65px;
+            height: 65px;
+            vertical-align: middle;
+            border: 3px solid #d4af37; /* Gold/Brass border */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.8), inset 0 0 8px rgba(0,0,0,0.5);
+            background: radial-gradient(circle at center, #2c3e50 0%, #000000 100%);
+            padding: 4px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        #loot-item .jrpg-equip-img {
+            width: 120px;
+            height: 120px;
+            border-width: 4px;
+            margin-top: 15px;
+        }
+
+        .combine-item .jrpg-equip-img {
+            width: 90px;
+            height: 90px;
+            border-width: 4px;
+        }
+
+        /* Floating Icons */
+        .float-icon {
+            font-size: 4.5rem;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 8px 15px rgba(0,0,0,0.2));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .treasure-icon {
+            font-size: 3.5rem;
+            margin: 5px 0 10px 0;
+            filter: drop-shadow(0 5px 15px rgba(255, 215, 0, 0.5));
+            animation: floatBounce 2.5s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes floatBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+
+        /* Text Layouts with Bigger Fonts */
+        .animate-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            text-align: left;
+            margin-bottom: 15px;
+            width: 100%;
+            line-height: 1.6;
+            background: linear-gradient(to right, #f0f7ff, #ffffff);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 6px solid #00d2ff;
+            box-shadow: var(--game-shadow);
+        }
+
+        /* Enhanced Dialogue Typography Scale */
+        .dialogue-box-container {
+            background: linear-gradient(to right, #f8faff, #ffffff);
+            padding: 20px 18px;
+            border-radius: 12px;
+            border-left: 6px solid #7000ff;
+            box-shadow: var(--game-shadow);
+            width: 100%;
+            text-align: left;
+            font-size: 1.28rem !important;
+            line-height: 1.75;
+            color: var(--text-main);
+            min-height: 135px;
+        }
+
+        /* Character Fade Animation for Left-To-Right Effect */
+        .char-fade {
+            opacity: 0;
+            transform: translateX(-8px);
+            display: inline-block;
+            animation: charFadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes charFadeIn {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* --- JRPG Loading Animation --- */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+            width: 100%;
+            overflow: hidden;
+            height: 90px;
+            position: relative;
+            transition: opacity 0.3s ease; /* For smooth vanish */
+        }
+
+        .loading-text {
+            position: absolute;
+            bottom: 20px;
+            display: flex;
+            font-size: 2.5rem; /* Large jumping text */
+            font-weight: 900;
+            color: #7000ff;
+            letter-spacing: 4px;
+            text-shadow: 0 4px 10px rgba(112, 0, 255, 0.3);
+        }
+
+        .loading-text span {
+            display: inline-block;
+            animation: jumpText 1.2s infinite ease-in-out;
+        }
+
+        .loading-text span:nth-child(1) { animation-delay: 0.0s; }
+        .loading-text span:nth-child(2) { animation-delay: 0.1s; }
+        .loading-text span:nth-child(3) { animation-delay: 0.2s; }
+        .loading-text span:nth-child(4) { animation-delay: 0.3s; }
+        .loading-text span:nth-child(5) { animation-delay: 0.4s; }
+        .loading-text span:nth-child(6) { animation-delay: 0.5s; }
+        .loading-text span:nth-child(7) { animation-delay: 0.6s; }
+        .loading-text span:nth-child(8) { animation-delay: 0.7s; }
+        .loading-text span:nth-child(9) { animation-delay: 0.8s; }
+        .loading-text span:nth-child(10) { animation-delay: 0.9s; }
+
+        @keyframes jumpText {
+            0%, 40%, 100% { transform: translateY(0) scale(1); color: #7000ff; }
+            20% { transform: translateY(-15px) scale(1.1); color: #00d2ff; }
+        }
+        /* -------------------------------------- */
+
+        /* Colorful Options */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .option-btn {
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: white;
+            border: 2px solid #e2e8f0;
+            border-left: 6px solid transparent;
+            color: var(--text-main);
+            padding: 14px 18px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            line-height: 1.4;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            width: 100%;
+        }
+
+        .option-btn:hover {
+            border-color: #00d2ff;
+            border-left: 8px solid #00d2ff;
+            background: linear-gradient(90deg, #f0f9ff, #ffffff);
+            transform: scale(1.02) translateX(4px);
+            box-shadow: 0 6px 12px rgba(0, 210, 255, 0.2);
+        }
+
+        /* Feedback Window Style */
+        .feedback-box {
+            background: rgba(255,255,255,0.95);
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #38ef7d;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 15px rgba(56, 239, 125, 0.15);
+        }
+        
+        .feedback-box .explanation {
+            margin-top: 10px;
+            font-size: 1.1rem;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .loot-display {
+            font-size: 1.3rem;
+            color: #7000ff;
+            font-weight: 900;
+            margin: 10px 0;
+            background: linear-gradient(135deg, #fffbeb, #fef08a);
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px dashed #f59f00;
+            width: 100%;
+            box-shadow: 0 6px 12px rgba(245, 159, 0, 0.2);
+        }
+
+        /* Combine Animation Setup */
+        .combine-arena {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 25px auto;
+        }
+
+        .combine-item {
+            position: absolute;
+            font-size: 2.8rem;
+            filter: drop-shadow(0 5px 15px rgba(251, 191, 36, 0.8));
+            opacity: 0;
+            transition: all 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .combine-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #fff, #fef08a);
+            border-radius: 50%;
+            box-shadow: 0 0 40px 15px rgba(251, 191, 36, 0);
+            opacity: 0;
+            z-index: 10;
+        }
+
+        /* Flash overlay for transition */
+        #flash-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: white;
+            opacity: 0;
+            z-index: 100;
+            pointer-events: none;
+            display: none;
+        }
+
+        @keyframes superGlow {
+            0% { box-shadow: 0 0 15px 8px rgba(251, 191, 36, 0.4); transform: translate(-50%, -50%) scale(1); }
+            50% { box-shadow: 0 0 80px 40px rgba(251, 191, 36, 1); transform: translate(-50%, -50%) scale(5); }
+            100% { box-shadow: 0 0 150px 80px rgba(255, 255, 255, 1); transform: translate(-50%, -50%) scale(15); }
+        }
+
+        /* Shake Animation for Errors */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(4px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* JRPG Styled Result Images */
+        .congrats-img {
+            width: 90%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 12px;
+            border: 4px solid #ffea00;
+            outline: 3px solid #b8860b;
+            outline-offset: -7px;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.5) inset;
+            margin-bottom: 20px;
+            animation: floatingGlowGold 3s ease-in-out infinite, popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            object-fit: cover;
+            display: block;
+        }
+
+        @keyframes floatingGlowGold {
+            0%, 100% {
+                transform: translateY(0);
+                box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.6);
+            }
+            50% {
+                transform: translateY(-15px);
+                box-shadow: 0 25px 40px rgba(255, 215, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.9);
+            }
+        }
+
+        .lose-img {
+            width: 90%;
+            max-width: 350px;
+            height: auto;
+            border-radius: 12px;
+            border: 4px solid #ff4b2b;
+            outline: 3px solid #8b0000;
+            outline-offset: -7px;
+            box-shadow: 0 0 25px rgba(255, 75, 43, 0.8), 0 0 10px rgba(255, 255, 255, 0.2) inset;
+            margin-bottom: 20px;
+            animation: floatingGlowDanger 3s ease-in-out infinite, popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            object-fit: cover;
+            display: block;
+        }
+
+        @keyframes floatingGlowDanger {
+            0%, 100% {
+                transform: translateY(0);
+                box-shadow: 0 8px 25px rgba(255, 75, 43, 0.4), 0 0 15px rgba(255, 75, 43, 0.6);
+            }
+            50% {
+                transform: translateY(-15px);
+                box-shadow: 0 25px 40px rgba(255, 75, 43, 0.5), 0 0 35px rgba(255, 75, 43, 0.8);
+            }
+        }
+
+        /* Front Page Image Showcase Style */
+        .front-page-banner {
+            width: 90%;
+            max-width: 420px;
+            height: auto;
+            border-radius: 16px;
+            border: 3px solid #fff;
+            margin-bottom: 15px;
+            object-fit: cover;
+            display: block;
+            animation: floatingGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes floatingGlow {
+            0%, 100% { 
+                transform: translateY(0); 
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), 0 0 10px rgba(255, 255, 255, 0.3);
+            }
+            50% { 
+                transform: translateY(-15px); 
+                box-shadow: 0 25px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 255, 255, 0.6);
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
+
+<div class="jrpg-bg-effects">
+    <div class="jrpg-cloud cloud-1"></div>
+    <div class="jrpg-cloud cloud-2"></div>
+    <div class="jrpg-cloud cloud-3"></div>
+    <div class="jrpg-cloud cloud-4"></div>
+    
+    <div class="jrpg-star star-1"></div>
+    <div class="jrpg-star star-2"></div>
+    <div class="jrpg-star star-3"></div>
+</div>
+
+<script>
+    // --- Security & Copyright Protection ---
+    document.addEventListener('contextmenu', event => event.preventDefault()); // 禁止右鍵
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'F12' || e.keyCode === 123) e.preventDefault(); // F12
+        if ((e.ctrlKey || e.metaKey) && (e.shiftKey || e.altKey) && (e.key === 'I' || e.key === 'i')) e.preventDefault(); // Ctrl+Shift+I
+        if ((e.ctrlKey || e.metaKey) && (e.shiftKey || e.altKey) && (e.key === 'J' || e.key === 'j')) e.preventDefault(); // Ctrl+Shift+J
+        if ((e.ctrlKey || e.metaKey) && (e.shiftKey || e.altKey) && (e.key === 'C' || e.key === 'c')) e.preventDefault(); // Ctrl+Shift+C
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'U' || e.key === 'u')) e.preventDefault(); // Ctrl+U
+    });
+</script>
+
+<div id="game-container">
+    
+    <div class="jrpg-panel-bg">
+        <div class="jrpg-panel-bg-inner"></div>
+        <div class="watermark-emblem">⚕️</div>
+    </div>
+
+    <div id="flash-overlay"></div>
+
+    <div id="screen-start" class="screen">
+        <img src="FrontPage.png" alt="The Quest of Medication Safety" class="front-page-banner">
+        <div class="title-wrapper">
+            <div class="main-title">伊院の藥物安全物語</div>
+            <div class="decor-line">- MedSafety Story in QE［PCA Ver.］-</div>
+            <div class="sub-title">─ 關於我成為藥安大師這檔事【護理員篇】─</div>
+        </div>
+        <div class="animate-text highlight-text" id="start-desc" style="margin-bottom: 25px; color: var(--text-muted); padding: 0 10px;">
+            傳聞喺五大區域之中，隱藏住五件閃閃發光嘅護理神器！想得到佢哋？靠蠻力係冇用嘅，唯有解開一個充滿挑戰嘅<strong>「藥物安全謎題」</strong>先可以打開寶箱搵到佢哋！新晉護理員們，快啲組隊出發啦！集齊呢套傳說裝備，你就會成為<strong>「藥物安全大師」</strong>！Let's go！一齊踏上奇幻旅程，邁向屬於你嘅榮耀之路！
+        </div>
+        <button id="btn-start" class="btn btn-primary delayed-btn" onclick="startGame()">開始探索 (START)</button>
+    </div>
+
+    <div id="screen-map" class="screen" style="justify-content: flex-start; padding-top: 0;">
+        <div class="status-bar">
+            <div class="status-top">
+                <span>HP 生命值</span>
+                <span id="hp-text">10 / 10</span>
+            </div>
+            <div class="hearts-container" id="hp-hearts-fill"></div>
+        </div>
+        <div style="padding: 15px 0; width: 100%; z-index: 1;">
+            <h2 style="color: #0070c0; margin-bottom: 10px; text-align: left; font-size: 1.3rem; font-weight: 900; border-left: 5px solid #00d2ff; padding-left: 10px;">探索區域 (Select Area)</h2>
+            
+            <div class="map-wrapper" id="map-wrapper">
+                <img src="select area.png" alt="Map Background">
+                <svg id="svg-overlay" class="svg-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="magicLaserGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#00f2fe" />
+                            <stop offset="40%" stop-color="#b5179e" />
+                            <stop offset="75%" stop-color="#7209b7" />
+                            <stop offset="100%" stop-color="#4cc9f0" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div id="area-buttons" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
+            </div>
+
+            <div class="inventory-container">
+                <h3>隨身背包 (Inventory)</h3>
+                <div class="inventory-slots" id="inventory-slots">
+                    <div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div>
+                </div>
+            </div>
+
+            <button id="btn-combine" class="btn btn-success delayed-btn" style="margin-top: 20px; width: 100%; max-width: none;" onclick="playCombineAnimation()">⚡ 合成極品護理員制服！</button>
+        </div>
+    </div>
+
+    <div id="screen-dialogue" class="screen" style="justify-content: flex-start; padding-top: 0;">
+        <div class="status-bar">
+            <div class="status-top">
+                <span>HP 生命值</span>
+                <span id="dialogue-hp-text"></span>
+            </div>
+            <div class="hearts-container" id="d-hp-hearts-fill"></div>
+        </div>
+        
+        <div style="padding: 25px 0 15px 0; width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 1;">
+            
+            <video id="loop-video" width="100%" height="auto" autoplay loop muted playsinline style="border-radius: 12px; margin-bottom: 10px;">
+                <source src="Running.mp4" type="video/mp4">
+            </video>
+            
+            <div class="area-badge" style="margin-bottom: 25px;">📍 區域探索中...</div>
+            <div class="dialogue-box-container highlight-text" id="dialogue-box">
+                </div>
+                
+            <div id="loading-animation" class="loading-container">
+                <div class="loading-text">
+                    <span>L</span><span>o</span><span>a</span><span>d</span><span>i</span><span>n</span><span>g</span><span>.</span><span>.</span><span>.</span>
+                </div>
+            </div>
+
+            <button id="btn-start-puzzle" class="btn btn-primary delayed-btn" style="margin-top: 25px;" onclick="goToQuestion()">開始解謎 ✨</button>
+        </div>
+    </div>
+
+    <div id="screen-question" class="screen" style="justify-content: flex-start; padding-top: 0;">
+        <div class="status-bar">
+            <div class="status-top">
+                <span>HP 生命值</span>
+                <span id="q-hp-text"></span>
+            </div>
+            <div class="hearts-container" id="q-hp-hearts-fill"></div>
+        </div>
+        
+        <div style="padding: 10px 0 15px 0; width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 1;">
+            <div class="area-badge">📍 <span id="current-area-display"></span> ‧ 挑戰中</div>
+            <div class="treasure-icon">🎁</div>
+            <div class="question-text highlight-text" id="question-text">載入問題中...</div>
+            <div class="options-container delayed-btn" id="options-container">
+                </div>
+        </div>
+    </div>
+
+    <div id="screen-wrong" class="screen" style="justify-content: flex-start; padding-top: 0;">
+        <div class="status-bar">
+            <div class="status-top">
+                <span>HP 生命值</span>
+                <span id="wrong-hp-text"></span>
+            </div>
+            <div class="hearts-container" id="w-hp-hearts-fill"></div>
+        </div>
+        
+        <div style="padding: 10px 0 15px 0; width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 1;">
+            <div class="area-badge danger">💥 挑戰受挫</div>
+            <div class="float-icon" style="font-size: 4rem; margin-bottom: 5px;">⚠️</div>
+            <h2 style="color: #e53935; margin-bottom: 15px; font-weight: 900;">決策失誤！扣除 1 點 HP</h2>
+            
+            <div class="feedback-box" style="border-color: #ff416c; background: #fff5f5;">
+                <strong style="color: #c62828; font-size: 1.15rem;">💡 錯誤解析：</strong>
+                <div class="explanation highlight-text" id="wrong-explanation-text"></div>
+            </div>
+            
+            <button id="btn-wrong-retry" class="btn btn-danger delayed-btn" style="margin-top: 10px;" onclick="drawNextQuestion()">重新挑戰本區另一題</button>
+        </div>
+    </div>
+
+    <div id="screen-feedback" class="screen">
+        <div class="float-icon" style="font-size: 4rem; margin-bottom: 5px;">🔓</div>
+        <h2 style="color: #11998e; margin-bottom: 10px; font-weight: 900;">解鎖成功！寶箱已開啟</h2>
+        <div class="feedback-box">
+            <strong style="color: #11998e; font-size: 1.15rem;">💡 藥安大師要點：</strong>
+            <div class="explanation highlight-text" id="explanation-text"></div>
+        </div>
+        <div class="loot-display delayed-btn" id="loot-display-container">
+            ✨ 獲得稀有裝備 ✨
+            <span id="loot-item" style="font-size: 3rem; display: block; margin-top: 10px; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.15)); animation: popIn 0.6s ease-out;"></span>
+        </div>
+        <button id="btn-feedback-return" class="btn btn-primary delayed-btn" onclick="returnToMap()">放入背包並返回 🎒</button>
+    </div>
+
+    <div id="screen-combine" class="screen">
+        <h1 style="color: #005b9f; font-size: 1.8rem; font-weight: 900; margin-top: 20px;">正在合成神裝...</h1>
+        <div class="combine-arena" id="combine-arena">
+            <div class="combine-center" id="combine-center"></div>
+        </div>
+    </div>
+
+    <div id="screen-gameover" class="screen">
+        <img src="lose.png" alt="Game Over" class="lose-img">
+        <h1 style="color: #ff416c; margin-bottom: 10px; font-weight: 900; font-size: 2.2rem;">HP 歸零 ‧ 挑戰結束</h1>
+        <p class="animate-text highlight-text" id="gameover-desc" style="margin-bottom: 25px; color: var(--text-muted); padding: 0 15px;">
+            藥物安全關乎生命尊嚴，<strong>不容一絲差錯</strong>！<br>請溫習醫療指引，整裝待發再度前來。
+        </p>
+        <button id="btn-gameover-restart" class="btn btn-danger delayed-btn" onclick="resetGameToStart()">重返起點 (Restart)</button>
+    </div>
+
+    <div id="screen-win" class="screen">
+        <img src="Congrats.png" alt="Congrats" class="congrats-img">
+        <h1 style="background: var(--success-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; font-weight: 900; font-size: 2.4rem;">傳說達成！</h1>
+        <h2 style="margin-bottom: 15px; color: #7000ff; font-size: 1.4rem; font-weight: 900;">神裝合成 ‧ 晉升藥安大師</h2>
+        <p class="animate-text highlight-text" id="win-desc" style="margin-bottom: 25px; color: #334155; padding: 0 10px;">
+            你已成功通過五大區域的嚴苛試煉！<br>臨床上請務必堅守 <strong>「藥物安全」</strong> 黃金法則，伊院的病人安全將由你守護！
+        </p>
+        <button id="btn-win-restart" class="btn btn-success delayed-btn" onclick="resetGameToStart()">再度締造傳奇 (Play Again) 🏆</button>
+    </div>
+</div>
+
+<script>
+    // --- Text Fade In Animation Logic (Preserves HTML Tags) ---
+    function applyTextAnimation(el, onComplete, isDynamic = false) {
+        if (!isDynamic && !el.hasAttribute('data-original')) {
+            el.setAttribute('data-original', el.innerHTML);
+        }
+        const htmlToAnimate = isDynamic ? el.innerHTML : el.getAttribute('data-original');
+        
+        const temp = document.createElement('div');
+        temp.innerHTML = htmlToAnimate;
+        
+        let charIndex = 0;
+        const delayPerChar = 30; // 調整文字浮現速度
+        
+        function wrapNodes(node) {
+            if (node.nodeType === 3) { // Text node
+                const text = node.nodeValue;
+                const fragment = document.createDocumentFragment();
+                for (let i = 0; i < text.length; i++) {
+                    const char = text[i];
+                    if (char.trim() === '') {
+                        fragment.appendChild(document.createTextNode(char));
+                    } else {
+                        const span = document.createElement('span');
+                        span.innerText = char;
+                        span.className = 'char-fade';
+                        span.style.animationDelay = `${charIndex * delayPerChar}ms`;
+                        fragment.appendChild(span);
+                        charIndex++;
+                    }
+                }
+                node.parentNode.replaceChild(fragment, node);
+            } else if (node.nodeType === 1) { // Element node
+                if (node.tagName.toLowerCase() !== 'br') {
+                    Array.from(node.childNodes).forEach(wrapNodes);
+                }
+            }
+        }
+        
+        Array.from(temp.childNodes).forEach(wrapNodes);
+        
+        el.innerHTML = '';
+        while(temp.firstChild) {
+            el.appendChild(temp.firstChild);
+        }
+
+        if (onComplete) {
+            setTimeout(onComplete, charIndex * delayPerChar + 300); // 動畫結束後加上小緩衝再顯示按鈕
+        }
+    }
+
+    // --- Enhanced Questions Data Base (Removed "第X題" labels completely) ---
+    const rawQuestions = [
+        {
+            q: "替病人換片時發現病床上面有一粒藥丸，因為知道病人有定時食藥，護士亦剛剛派完藥，PCA 同事可以<strong>直接順便餵病人食埋佢</strong>。",
+            opts: { "True": "✅ 正確 (True)", "False": "❌ 錯誤 (False)" },
+            ans: "False",
+            exp: "床上發現不知名或遺留的藥物時，<strong>絕對不可自行餵給病人</strong>！正確做法是立即<strong>報告給病房護士</strong>，由護士核對病人身份、醫囑以及藥物種類後進行處理，以防病人漏服或重覆服用錯誤藥物。"
+        },
+        {
+            q: "病人向 PCA 同事表示自己有吞嚥困難，好難吞落口。為了互相幫忙並減少病人辛苦，PCA 同事可以<strong>自行用藥碎器將所有藥丸壓碎</strong>，並混合在一起方便病人服用。",
+            opts: { "True": "✅ 正確 (True)", "False": "❌ 錯誤 (False)" },
+            ans: "False",
+            exp: "PCA 助理<strong>絕對不可自行將藥物壓碎或混合</strong>！有些藥物（如特殊外層塗衣丸、緩釋膠囊或腸溶片）壓碎後會破壞藥效，甚至導致嚴重的藥物副作用。如有任何吞嚥問題，必須先<strong>通知護士評估</strong>，並由醫生或藥劑師核准。"
+        },
+        {
+            q: "當發現病人食完藥之後，出現頭暈、皮膚出疹、嘔吐或肚瀉等懷疑藥物副作用徵狀時，PCA 同事應該<strong>即時通知護士</strong>。",
+            opts: { "True": "✅ 正確 (True)", "False": "❌ 錯誤 (False)" },
+            ans: "True",
+            exp: "這是標準的臨床安全程序。PCA 助理在日常照顧病人時，是觀察病人反應的第一線。一旦發現病人用藥後出現任何異常生理徵狀，必須<strong>即時通知護士</strong>作出臨床評估，以免延誤治療。"
+        },
+        {
+            q: "病人表示自己現時肚瀉，不想服用枱面那一杯由護士準備好的「大便藥水（瀉藥）」。PCA 同事為了順從病人意願，可以<strong>直接將枱面上那杯黃色藥水倒掉</strong>，不需要驚動護士。",
+            opts: { "True": "✅ 正確 (True)", "False": "❌ 錯誤 (False)" },
+            ans: "False",
+            exp: "病人拒絕服藥或表示病情有變（如已經肚瀉，不想食大便藥），PCA 同事<strong>絕對不可自行將藥水倒掉或隱瞞</strong>。正確的做法是<strong>通知派藥護士</strong>，讓護士在 IPMOE 系統記錄病人拒服，並由醫生重新評估是否需要停藥。"
+        },
+        {
+            q: "如果在協助病人時，不小心意外掉了一粒藥物在地上。因為地面看起來很乾淨，PCA 同事可以<strong>直接撿起來放回藥杯給病人服用</strong>。",
+            opts: { "True": "✅ 正確 (True)", "False": "❌ 錯誤 (False)" },
+            ans: "False",
+            exp: "藥物只要掉落在地上，就已經受到<strong>環境微生物的污染（Contaminated）</strong>，絕對不可再給病人服用。正確做法是向派藥護士報告，將污損藥物棄置，並由護士重新經系統核對及補發新藥。"
+        },
+        {
+            q: "處理病人用藥相關的物品（例如清洗藥杯、傳遞藥杯或棄置藥物包裝）前後，都一定要做好<strong>手部衛生</strong>（使用肥皂洗手或用酒精搓手液）。",
+            opts: { "True": "✅ 正確 (True)", "False": "❌ 錯誤 (False)" },
+            ans: "True",
+            exp: "接觸用藥物品前後進行嚴格的手部衛生，是預防醫院內交叉感染、保護病人免疫系統的<strong>重要黃金法則</strong>。"
+        }
+    ];
+
+    const allEquipments = [
+        { name: "護理員上衣 (PCA Clothes)", icon: "<img src='clothes.png' class='jrpg-equip-img'>" },
+        { name: "護理員長褲 (PCA Pants)", icon: "<img src='pants.png' class='jrpg-equip-img'>" },
+        { name: "護理員鞋 (PCA Shoes)", icon: "<img src='Shoes.png' class='jrpg-equip-img'>" },
+        { name: "職員證 (Staff Card)", icon: "<img src='Staff card.png' class='jrpg-equip-img'>" },
+        { name: "外科口罩 (Surgical Mask)", icon: "<img src='Mask.png' class='jrpg-equip-img'>" }
+    ];
+
+    const hospitalAreas = ["急症室", "內科病房", "護士學校", "手術室大樓", "日間醫療中心"];
+
+    // --- Game State ---
+    let hp = 10;
+    let inventory = [];
+    let availableQuestions = [];
+    let availableEquipments = [];
+    let areasStatus = {}; 
+    let currentArea = "";
+    let currentQuestion = null;
+    let typingTimeout = null;
+
+    // --- Utility Functions ---
+    function updateHpDisplay() {
+        const textIds = ['hp-text', 'dialogue-hp-text', 'q-hp-text', 'wrong-hp-text'];
+        const containerIds = ['hp-hearts-fill', 'd-hp-hearts-fill', 'q-hp-hearts-fill', 'w-hp-hearts-fill'];
+        
+        // Update texts
+        textIds.forEach(id => {
+            if (document.getElementById(id)) {
+                document.getElementById(id).innerText = `${hp} / 10`;
+            }
+        });
+        
+        // Generate hearts HTML
+        let heartsHTML = '';
+        for (let i = 1; i <= 10; i++) {
+            if (i <= hp) {
+                heartsHTML += '<span class="heart">❤️</span>';
+            } else {
+                heartsHTML += '<span class="heart empty">🖤</span>';
+            }
+        }
+        
+        // Apply to all heart containers
+        containerIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.innerHTML = heartsHTML;
+            }
+        });
+    }
+
+    function switchScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    // --- Game Flow Functions ---
+    function resetGameToStart() {
+        switchScreen('screen-start');
+        const startDesc = document.getElementById('start-desc');
+        const startBtn = document.getElementById('btn-start');
+        startBtn.classList.remove('show');
+        applyTextAnimation(startDesc, () => { startBtn.classList.add('show'); }, false);
+    }
+
+    function startGame() {
+        hp = 10;
+        inventory = [];
+        availableQuestions = shuffle([...rawQuestions]);
+        availableEquipments = shuffle([...allEquipments]);
+        
+        areasStatus = {};
+        hospitalAreas.forEach(area => areasStatus[area] = false);
+
+        updateHpDisplay();
+        renderMap();
+        renderInventory();
+        document.getElementById('btn-combine').classList.remove('show');
+        document.getElementById('btn-combine').style.display = 'none';
+
+        switchScreen('screen-map');
+    }
+
+    function renderMap() {
+        const areaContainer = document.getElementById('area-buttons');
+        const svgOverlay = document.getElementById('svg-overlay');
+        areaContainer.innerHTML = '';
+        
+        // Keep defs node intact
+        const defs = svgOverlay.querySelector('defs');
+        svgOverlay.innerHTML = '';
+        if(defs) svgOverlay.appendChild(defs);
+
+        // JRPG map node positions (percentages for scalability)
+        const coords = [
+            {x: 20, y: 25},
+            {x: 80, y: 25},
+            {x: 20, y: 65},
+            {x: 80, y: 65},
+            {x: 50, y: 85}
+        ];
+
+        hospitalAreas.forEach((area, index) => {
+            const isCompleted = areasStatus[area];
+            const btn = document.createElement('button');
+            btn.className = `map-node ${isCompleted ? 'completed' : ''}`;
+            btn.disabled = isCompleted;
+            
+            // JRPG Font Style
+            btn.innerHTML = `<span>${isCompleted ? '✅' : '✧'} ${area}</span>`;
+            
+            btn.style.setProperty('--target-x', `${coords[index].x}%`);
+            btn.style.setProperty('--target-y', `${coords[index].y}%`);
+            
+            const delay = index * 0.1;
+            btn.style.animationDelay = `${delay}s`;
+
+            if (!isCompleted) {
+                btn.onclick = () => enterArea(area);
+            }
+            areaContainer.appendChild(btn);
+        });
+    }
+
+    function renderInventory() {
+        const slotsContainer = document.getElementById('inventory-slots');
+        slotsContainer.innerHTML = '';
+        
+        for (let i = 0; i < 5; i++) {
+            const slot = document.createElement('div');
+            if (i < inventory.length) {
+                slot.className = 'slot filled';
+                slot.innerHTML = inventory[i].icon;
+                slot.title = inventory[i].name;
+            } else {
+                slot.className = 'slot';
+            }
+            slotsContainer.appendChild(slot);
+        }
+
+        if (inventory.length === 5) {
+            const combineBtn = document.getElementById('btn-combine');
+            combineBtn.style.display = 'flex';
+            setTimeout(() => combineBtn.classList.add('show'), 100);
+        }
+    }
+
+    function enterArea(areaName) {
+        currentArea = areaName;
+        document.getElementById('current-area-display').innerText = `${areaName}`;
+        
+        const dialogueBox = document.getElementById('dialogue-box');
+        const puzzleBtn = document.getElementById('btn-start-puzzle');
+        const loadingAnim = document.getElementById('loading-animation');
+        
+        dialogueBox.innerHTML = `你已進入 <strong>${areaName}</strong> ...<br>你發現了一個寶箱，上面有一道有關<strong>藥物安全</strong>的問題 …<br>冥冥中，你感覺到只要解謎成功將會獲得<strong>意想不到的驚喜</strong>！`;
+        
+        puzzleBtn.classList.remove('show');
+        puzzleBtn.style.display = 'none';
+        
+        if (loadingAnim) {
+            loadingAnim.style.display = 'flex';
+            loadingAnim.style.opacity = '1';
+        }
+        
+        switchScreen('screen-dialogue');
+        applyTextAnimation(dialogueBox, () => { 
+            // Handle loading vanish before button appears
+            if (loadingAnim) {
+                loadingAnim.style.opacity = '0';
+                setTimeout(() => {
+                    loadingAnim.style.display = 'none';
+                    puzzleBtn.style.display = 'flex';
+                    setTimeout(() => {
+                        puzzleBtn.classList.add('show');
+                    }, 50);
+                }, 300); // wait for fade out
+            } else {
+                puzzleBtn.style.display = 'flex';
+                setTimeout(() => {
+                    puzzleBtn.classList.add('show');
+                }, 50);
+            }
+        }, true);
+    }
+
+    function goToQuestion() {
+        drawNextQuestion();
+    }
+
+    function drawNextQuestion() {
+        if (availableQuestions.length === 0) {
+            availableQuestions = shuffle([...rawQuestions]);
+        }
+        
+        currentQuestion = availableQuestions.pop();
+        
+        const qText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        
+        qText.innerHTML = currentQuestion.q;
+        optionsContainer.classList.remove('show');
+        optionsContainer.innerHTML = '';
+        
+        Object.keys(currentQuestion.opts).forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = currentQuestion.opts[key];
+            btn.onclick = () => checkAnswer(key);
+            optionsContainer.appendChild(btn);
+        });
+
+        switchScreen('screen-question');
+        applyTextAnimation(qText, () => { optionsContainer.classList.add('show'); }, true);
+    }
+
+    function checkAnswer(selectedKey) {
+        if (selectedKey === currentQuestion.ans) {
+            areasStatus[currentArea] = true;
+            const loot = availableEquipments.pop();
+            inventory.push(loot);
+            
+            const expText = document.getElementById('explanation-text');
+            const returnBtn = document.getElementById('btn-feedback-return');
+            const lootContainer = document.getElementById('loot-display-container');
+            
+            expText.innerHTML = currentQuestion.exp;
+            returnBtn.classList.remove('show');
+            lootContainer.classList.remove('show');
+            document.getElementById('loot-item').innerHTML = `${loot.icon} ${loot.name}`;
+            
+            switchScreen('screen-feedback');
+            applyTextAnimation(expText, () => { 
+                lootContainer.classList.add('show');
+                setTimeout(() => returnBtn.classList.add('show'), 400); 
+            }, true);
+            
+        } else {
+            hp--;
+            updateHpDisplay();
+            
+            const container = document.getElementById('game-container');
+            container.classList.add('shake');
+            setTimeout(() => container.classList.remove('shake'), 500);
+
+            if (hp <= 0) {
+                setTimeout(() => { 
+                    switchScreen('screen-gameover'); 
+                    const goDesc = document.getElementById('gameover-desc');
+                    const goBtn = document.getElementById('btn-gameover-restart');
+                    goBtn.classList.remove('show');
+                    applyTextAnimation(goDesc, () => { goBtn.classList.add('show'); }, false);
+                }, 450);
+            } else {
+                setTimeout(() => { 
+                    switchScreen('screen-wrong'); 
+                    const wrongExpText = document.getElementById('wrong-explanation-text');
+                    const retryBtn = document.getElementById('btn-wrong-retry');
+                    
+                    wrongExpText.innerHTML = currentQuestion.exp;
+                    retryBtn.classList.remove('show');
+                    applyTextAnimation(wrongExpText, () => { retryBtn.classList.add('show'); }, true);
+                }, 450);
+            }
+        }
+    }
+
+    function returnToMap() {
+        renderMap();
+        renderInventory();
+        switchScreen('screen-map');
+    }
+
+    // --- Combine Animation Flow ---
+    function playCombineAnimation() {
+        switchScreen('screen-combine');
+        
+        const arena = document.getElementById('combine-arena');
+        const center = document.getElementById('combine-center');
+        const overlay = document.getElementById('flash-overlay');
+        
+        document.querySelectorAll('.combine-item').forEach(el => el.remove());
+        center.style.animation = 'none';
+        center.style.opacity = '0';
+        overlay.style.display = 'block';
+        overlay.style.opacity = '0';
+
+        const radius = 100;
+        const items = [];
+        
+        inventory.forEach((item, index) => {
+            const angle = (index / 5) * Math.PI * 2 - (Math.PI / 2);
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+
+            const el = document.createElement('div');
+            el.className = 'combine-item';
+            el.innerHTML = item.icon;
+            el.style.left = `calc(50% + ${x}px)`;
+            el.style.top = `calc(50% + ${y}px)`;
+            el.style.transform = 'translate(-50%, -50%) scale(0.5) rotate(-30deg)';
+            
+            arena.appendChild(el);
+            items.push(el);
+        });
+
+        setTimeout(() => {
+            items.forEach(el => {
+                el.style.opacity = '1';
+                el.style.transform = 'translate(-50%, -50%) scale(1) rotate(0deg)';
+            });
+        }, 100);
+
+        setTimeout(() => {
+            items.forEach((el, index) => {
+                el.style.left = '50%';
+                el.style.top = '50%';
+                el.style.transform = `translate(-50%, -50%) scale(0.2) rotate(${360 * (index+1)}deg)`;
+                el.style.opacity = '0.5';
+            });
+            center.style.opacity = '1';
+        }, 1200);
+
+        setTimeout(() => {
+            center.style.animation = 'superGlow 0.8s forwards';
+        }, 2000);
+
+        setTimeout(() => {
+            overlay.style.opacity = '1';
+            overlay.style.transition = 'opacity 0.2s';
+        }, 2400);
+
+        setTimeout(() => {
+            switchScreen('screen-win');
+            overlay.style.transition = 'opacity 1s';
+            overlay.style.opacity = '0';
+            setTimeout(() => { overlay.style.display = 'none'; }, 1000);
+            
+            const winDesc = document.getElementById('win-desc');
+            const winBtn = document.getElementById('btn-win-restart');
+            winBtn.classList.remove('show');
+            applyTextAnimation(winDesc, () => { winBtn.classList.add('show'); }, false);
+
+        }, 2600);
+    }
+
+    // Init first screen animation
+    document.addEventListener("DOMContentLoaded", () => {
+        switchScreen('screen-start');
+        const startDesc = document.getElementById('start-desc');
+        const startBtn = document.getElementById('btn-start');
+        applyTextAnimation(startDesc, () => { startBtn.classList.add('show'); }, false);
+    });
+
+</script>
+
+</body>
+</html>
